@@ -1,14 +1,18 @@
 let answer = '';
-let score = 5;
+let score = 0;
 let stage = localStorage.getItem('word_stage');
-
-const highScoreAddress = 'word_high_score_' + stage;
-
-let highScore = localStorage.getItem(highScoreAddress) ?? 5;
-
 if(stage === null) {
     window.location.href = 'select_stage.html'
 }
+
+let maxLife = 10;
+let life = 3;
+
+let isLoaded = false;
+
+const highScoreAddress = 'word_high_score_' + stage;
+let highScore = localStorage.getItem(highScoreAddress) ?? 5;
+
 
 const easy = `chicken: 닭
 egg: 달걀, 계란
@@ -53,12 +57,17 @@ let highScoreElement = document.getElementById('high_score');
 for(let button of selectButton) {
     if(button instanceof HTMLButtonElement) {
         button.onclick = function () {
+            if(!isLoaded) {
+                alert('로딩 중입니다! 잠시만 기다려주세요!');
+                return;
+            }
             if(button.innerHTML === answer) {
                 score++;
                 // console.log('정답: ' + answer);
             } else {
-                score--;
-                if(score < 0) {
+                let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
+                if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+                if(life < 1) {
                     game_over();
                 }
                 // console.log('오답: ' + answer);
@@ -107,29 +116,43 @@ function reset() {
     // console.log('reset function called. (new value : ' + answer)
     scoreElement.innerText = '점수: ' + score;
     highScoreElement.innerText = '현재 난이도 최고 기록: ' + highScore;
+    document.getElementById('left_life').innerText = life.toFixed();
 
 }
-
-let h2 = document.body.querySelector('h2');
-h2.innerText = '현재 난이도는 ' + localStorage.getItem('word_stage') + '입니다';
 
 window.onload = function() {
     switch(stage) {
         case '0':
             getWord(easy);
+            maxLife = 10;
             break;
         case '1':
             getWord(normal);
+            maxLife = 5;
             break;
         case '2':
             getWord(hard);
+            maxLife = 3;
             break;
         default:
+            maxLife = 5;
     }
+    life = maxLife;
     reset();
+    for(let i = 0; i < maxLife; i++) {
+        let img = document.createElement('img');
+        img.src = '../resources/heart.png';
+        img.width = 50;
+        img.height = 50;
+        img.id = 'heart' + i
+        document.getElementById('hearts').append(img);
+    }
+    isLoaded = true;
 };
 
-// let test = 100;
+// let test = 1000000;
+//
+// let time = 0;
 //
 // setInterval(() => {
 //     let str = test.toFixed();
@@ -137,6 +160,14 @@ window.onload = function() {
 //
 //     let second = str.substring(0, len-1);
 //
+//     let timer = document.getElementById('timer');
+//     timer.style.width = test + "px";
+//
 //     h2.innerText = '남은 시간: ' + ((second === '')? '0' : second )+ '.' + str.substring(len-1, len);
-//     test--;
+//     test -= time * time * 2;
+//     time++;
+//
+//     if(test < 0) {
+//         game_over();
+//     }
 // }, 100);
