@@ -10,9 +10,13 @@ h1 {
     width: 400px;
     height: 100px;
     color: black;
-    border-radius: 50px;
-    background-color: white;
+    border-radius: 30px;
     border: 0;
     box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
-    margin: 10px auto
+    margin: 10px auto;
+    transition: all 0.5s;
+}
+
+button:hover {
+    transform: scale(90%, 90%);
 }

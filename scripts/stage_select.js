@@ -11,7 +11,7 @@ window.onload = function () {
                     case 'stg_hard': stage = 2; break;
                     case 'stg_custom': stage = 3; break;
                 }
-                localStorage.setItem('word_stage', stage.toFixed());
+                localStorage.setItem('word_mode', stage.toFixed());
                 window.location.href = 'game.html';
             }
         }

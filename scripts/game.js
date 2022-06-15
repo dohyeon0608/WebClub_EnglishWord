@@ -1,30 +1,19 @@
 let answer = '';
 let score = 0;
-let stage = localStorage.getItem('word_stage');
-if(stage === null) {
+let mode = localStorage.getItem('word_mode');
+if(mode === null) {
     window.location.href = 'select_stage.html'
 }
 
-let maxLife = 10;
+let maxLife = 5;
 let life = 3;
 
 let isLoaded = false;
 
-const highScoreAddress = 'word_high_score_' + stage;
+const highScoreAddress = 'word_high_score_' + mode;
 let highScore = localStorage.getItem(highScoreAddress) ?? 5;
 
-
-const easy = `chicken: 닭
-egg: 달걀, 계란
-fool: 바보
-april: 4월`;
-
-const normal = `on ~ing: ~하자 마자
-however: 하지만
-do one's best: 최선을 다하다
-regret: 후회하다`;
-
-const hard = `offer: 제공하다
+const word_txt = `offer: 제공하다
 fluid: 유체, 유동체, 유동체의
 glance: 흘긋보다, 흘긋봄
 witness: 목격자, 증인, 목격하다, 증언하다
@@ -42,17 +31,19 @@ stroke: 타격, 뇌졸증`;
 let db = {
 };
 
-function getWord(string) {
-    for(let line of string.split('\n')) {
-        let l = line.split(': ');
-        db[l[0]] = l[1];
+let selectButton = document.getElementsByClassName('choice');
+let scoreElement = document.getElementById('score');
+let highScoreElement = document.getElementById('high_score');
+
+class GameFile {
+
+    constructor(onLoad, onButtonClick) {
+        this.onLoad = onLoad;
+        this.onButtonClick = onButtonClick;
     }
 
 }
 
-let selectButton = document.getElementsByClassName('choice');
-let scoreElement = document.getElementById('score');
-let highScoreElement = document.getElementById('high_score');
 
 for(let button of selectButton) {
     if(button instanceof HTMLButtonElement) {
@@ -115,27 +106,15 @@ function reset() {
     document.getElementById('word_box').innerText = question;
     // console.log('reset function called. (new value : ' + answer)
     scoreElement.innerText = '점수: ' + score;
-    highScoreElement.innerText = '현재 난이도 최고 기록: ' + highScore;
+    highScoreElement.innerText = '현재 모드 최고 기록: ' + highScore;
     document.getElementById('left_life').innerText = life.toFixed();
 
 }
 
 window.onload = function() {
-    switch(stage) {
-        case '0':
-            getWord(easy);
-            maxLife = 10;
-            break;
-        case '1':
-            getWord(normal);
-            maxLife = 5;
-            break;
-        case '2':
-            getWord(hard);
-            maxLife = 3;
-            break;
-        default:
-            maxLife = 5;
+    for(let line of word_txt.split('\n')) {
+        let l = line.split(': ');
+        db[l[0]] = l[1];
     }
     life = maxLife;
     reset();
@@ -147,6 +126,7 @@ window.onload = function() {
         img.id = 'heart' + i
         document.getElementById('hearts').append(img);
     }
+
     isLoaded = true;
 };
 
