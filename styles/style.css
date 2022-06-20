@@ -72,3 +72,11 @@ button:hover {
 
 body { overflow: hidden; }
 body * { touch-action: none; }
+
+body {
+    width:900px;
+    height:900px;
+    left:50%;
+    top:50%;
+    margin: 0 auto;
+}

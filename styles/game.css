@@ -15,7 +15,7 @@
     font-size: 60px;
     margin: 0 auto;
     padding: 10px 10px 15px 10px;
-    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
 }
 
 #word_box {
@@ -40,14 +40,4 @@
 .choice:hover {
     background-color: limegreen;
     color: white;
-}
-
-#center {
-    width:900px;
-    height:900px;
-    position:absolute;
-    left:50%;
-    top:50%;
-    margin-left:-450px;
-    margin-top:-450px;
 }

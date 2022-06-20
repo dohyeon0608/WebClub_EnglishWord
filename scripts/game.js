@@ -13,20 +13,21 @@ let isLoaded = false;
 const highScoreAddress = 'word_high_score_' + mode;
 let highScore = localStorage.getItem(highScoreAddress) ?? 5;
 
-const word_txt = `offer: 제공하다
-fluid: 유체, 유동체, 유동체의
-glance: 흘긋보다, 흘긋봄
-witness: 목격자, 증인, 목격하다, 증언하다
-official: 공식의, 심판
-proportion: 비율, 부분, 균형
-elaborate: 정교한, 공들인
-habitat: 서식지, 주거지
-splendid: 훌륭한, 멋진
-posture: 자세
-cure: 치료하다, 고치다, 치유법
-immune: 면역성의
-therapy: 치료, 요법
-stroke: 타격, 뇌졸증`;
+// const word_txt = `
+// rewarding: 만족감을 주는, 보람 있는`;
+
+function loadFile(filePath) {
+    let result = null;
+    let xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", filePath, false);
+    xmlHttp.send();
+    if (xmlHttp.status === 200) {
+        result = xmlHttp.responseText;
+    }
+    return result;
+}
+
+let word_txt;
 
 let db = {
 };
@@ -34,90 +35,41 @@ let db = {
 let selectButton = document.getElementsByClassName('choice');
 let scoreElement = document.getElementById('score');
 let highScoreElement = document.getElementById('high_score');
-
-class GameFile {
-
-    constructor(onLoad, onButtonClick) {
-        this.onLoad = onLoad;
-        this.onButtonClick = onButtonClick;
-    }
-
-}
-
-
-for(let button of selectButton) {
-    if(button instanceof HTMLButtonElement) {
-        button.onclick = function () {
-            if(!isLoaded) {
-                alert('로딩 중입니다! 잠시만 기다려주세요!');
-                return;
-            }
-            if(button.innerHTML === answer) {
-                score++;
-                // console.log('정답: ' + answer);
-            } else {
-                let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
-                if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
-                if(life < 1) {
-                    game_over();
-                }
-                // console.log('오답: ' + answer);
-            }
-            if(highScore < score) {
-                highScore = score;
-            }
-            reset();
-        };
-    }
-}
+let wordBoxElement = document.getElementById('word_box');
 
 function game_over() {
     localStorage.setItem(highScoreAddress, highScore)
+    localStorage.setItem('word_last_score', score);
     window.location.href = "game_over.html";
 }
 
-function reset() {
-    let index = Math.floor(Math.random() * Object.keys(db).length);
-    let question = (Object.keys(db))[index];
-    let answers = Object.values(db);
-    answer = answers[index];
-
-    let answer_index = Math.floor(Math.random() * 4);
-
-    let i = 0;
-    for(let button of selectButton) {
-        if(button instanceof HTMLButtonElement) {
-            let text = answers[Math.floor(Math.random() * answers.length)];
-            if(i === answer_index) {
-                if(answers.includes(answer)) {
-                    button.innerText = text = answer;
-                } else button.innerText = text;
-            } else {
-                button.innerText = text;
-            }
-            let index = answers.indexOf(text);
-            // console.log(answers);
-            if (index !== -1) {
-                answers.splice(index, 1);
-            }
-            i++;
-        }
-    }
-    document.getElementById('word_box').innerText = question;
-    // console.log('reset function called. (new value : ' + answer)
-    scoreElement.innerText = '점수: ' + score;
-    highScoreElement.innerText = '현재 모드 최고 기록: ' + highScore;
-    document.getElementById('left_life').innerText = life.toFixed();
-
+function error_alert(message) {
+    alert('오류가 발생했습니다.' + "\n" + message);
+    window.location.href = 'index.html'
 }
 
 window.onload = function() {
-    for(let line of word_txt.split('\n')) {
-        let l = line.split(': ');
-        db[l[0]] = l[1];
+    word_txt = loadFile('../resources/words/eng_suneung_6')
+    if(word_txt === null) {
+        error_alert('파일 로드에 실패했습니다: 알 수 없는 파일.');
     }
+
+    let line_number = 0;
+    for(let line of word_txt.split('\n')) {
+        line_number++
+        let l = line.split(': ');
+        if(l.length !== 2) {
+            error_alert('파일 로드에 실패했습니다: 구문 오류' + "\n" + '>  ' + line + ' (' + line_number + '번째 줄)');
+        }
+        db[l[0]] = l[1].replace('\r', '');
+    }
+
+    if(db.length < 4) {
+        error_alert('파일 로드에 실패했습니다: 단어가 너무 적습니다! 4개 이상의 단어를 작성해주세요,');
+    }
+
     life = maxLife;
-    reset();
+
     for(let i = 0; i < maxLife; i++) {
         let img = document.createElement('img');
         img.src = '../resources/heart.png';
@@ -126,28 +78,42 @@ window.onload = function() {
         img.id = 'heart' + i
         document.getElementById('hearts').append(img);
     }
+    reset();
+
+    if(!isLoaded) {
+        if(mode === '1' || mode === '2') {
+            document.getElementById('word_padding').remove();
+        } else {
+            document.getElementById('meaning_box').remove();
+        }
+    }
+
+    for(let button of selectButton) {
+        if(button instanceof HTMLButtonElement) {
+            button.onclick = function () {
+                if(!isLoaded) {
+                    alert('로딩 중입니다! 잠시만 기다려주세요!');
+                    return;
+                }
+                if(button.innerHTML === answer) {
+                    score++;
+                    // console.log('정답: ' + answer);
+                } else {
+                    let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
+                    if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+                    if(life < 1) {
+                        game_over();
+                    }
+                    // console.log('오답: ' + answer);
+                    // console.log('정답: ' + button.innerHTML)
+                }
+                if(highScore < score) {
+                    highScore = score;
+                }
+                reset();
+            };
+        }
+    }
 
     isLoaded = true;
 };
-
-// let test = 1000000;
-//
-// let time = 0;
-//
-// setInterval(() => {
-//     let str = test.toFixed();
-//     let len = str.length;
-//
-//     let second = str.substring(0, len-1);
-//
-//     let timer = document.getElementById('timer');
-//     timer.style.width = test + "px";
-//
-//     h2.innerText = '남은 시간: ' + ((second === '')? '0' : second )+ '.' + str.substring(len-1, len);
-//     test -= time * time * 2;
-//     time++;
-//
-//     if(test < 0) {
-//         game_over();
-//     }
-// }, 100);
