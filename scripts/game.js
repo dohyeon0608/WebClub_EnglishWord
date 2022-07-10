@@ -1,20 +1,22 @@
 let answer = '';
 let score = 0;
-let mode = localStorage.getItem('word_mode');
-if(mode === null) {
-    window.location.href = 'select_stage.html'
-}
+
 
 let maxLife = 5;
 let life = 3;
 
+const urlStr = window.location;
+const url = new URL(urlStr);
+let urlParameter = url.searchParams
 let isLoaded = false;
+let mode = urlParameter.get('mode');
+
+if(mode === null) {
+    window.location.href = 'select_stage.html'
+}
 
 const highScoreAddress = 'word_high_score_' + mode;
 let highScore = localStorage.getItem(highScoreAddress) ?? 5;
-
-// const word_txt = `
-// rewarding: 만족감을 주는, 보람 있는`;
 
 function loadFile(filePath) {
     let result = null;
@@ -49,7 +51,7 @@ function error_alert(message) {
 }
 
 window.onload = function() {
-    word_txt = loadFile('../resources/words/eng_suneung_6')
+    word_txt = loadFile('../resources/words/word_lib')
     if(word_txt === null) {
         error_alert('파일 로드에 실패했습니다: 알 수 없는 파일.');
     }
