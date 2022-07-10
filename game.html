@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>영단어 외우기</title>
+    <title>HELLO WORD - 게임 진행</title>
     <link rel="stylesheet" type="text/css" href="styles/style.css">
     <link rel="stylesheet" type="text/css" href="styles/game.css">
 </head>
@@ -16,6 +16,14 @@
     <p style="display: inline"> | </p>
     <p id="high_score" style="display: inline">최고기록: 0</p>
 
+    <div id="mode2">
+        <form id="mode2_form" onkeydown="return event.key !== 'Enter';">
+            <label>
+                <input name="answer" type="text" maxlength="45" id="mode2_input">
+            </label>
+        </form>
+        <button id="mode2_button">확인</button>
+    </div>
     <div id="buttons">
         <button class="choice">단어를 불러오고 있습니다...</button>
         <button class="choice">잠시만 기다려주세요.</button>

@@ -65,9 +65,10 @@ button {
 }
 
 button:hover {
-    background-color: #32cd32;
+    background-color: rgb(217, 188, 13);
     box-shadow: 0 0 3px 2px rgba(109, 82, 16, 0.2);
-    color: white
+    color: white;
+    transform: scale(90%, 90%);
 }
 
 body { overflow: hidden; }

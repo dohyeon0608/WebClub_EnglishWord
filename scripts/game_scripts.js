@@ -3,6 +3,8 @@ let answer_index = 0;
 let answers = [];
 let question = 'Loading';
 
+let mode2ButtonElement = document.getElementById('mode2_button');
+
 String.prototype.shuffle = function () {
     let a = this.split(""),
         n = a.length;
@@ -93,19 +95,35 @@ scripts[2] = function() {
     let word_number = Math.floor(Math.random() * Object.keys(db).length);
     let word = (Object.keys(db))[word_number];
 
-    answer = word;
+    let words = word.split(' ');
 
-    question = word.shuffle();
-
-    meaning_box.innerText = Object.values(db)[word_number];
-
-    for(let i = 0; i < 4; i++) {
-        answers.push(word.shuffle());
+    for(let i = 0; i < words.length; i++) {
+        words[i] = words[i].shuffle();
     }
 
-    answers.push(word);
+    question = words.join(' ')
 
-    settingButton(answers, answer_index, question);
+    meaning_box.innerText = Object.values(db)[word_number];
+    wordBoxElement.innerText = question;
+
+    answer = word;
+
+    mode2ButtonElement.onclick = function () {
+        let input = document.getElementById('mode2_form');
+        if(input instanceof HTMLFormElement) {
+            let value = document.getElementById('mode2_input').value;
+            input.reset()
+            on_click(value);
+        }
+    }
+
+    // for(let i = 0; i < 4; i++) {
+    //     answers.push(word.shuffle());
+    // }
+    //
+    // answers.push(word);
+    //
+    // settingButton(answers, answer_index, question);
 }
 
 function reset() {
@@ -114,4 +132,25 @@ function reset() {
     highScoreElement.innerText = '현재 모드 최고 기록: ' + highScore;
     document.getElementById('left_life').innerText = life.toFixed();
     scripts[mode]();
+    let input = document.getElementById('mode2');
+    if(!isLoaded) {
+        if(mode !== '2') {
+            input.remove();
+            mode2ButtonElement.remove()
+        } else {
+            document.getElementById('buttons').remove();
+            document.getElementById('mode2_form').onkeydown = function(ev) {
+                if (ev.code === "Enter") {
+                    ev.preventDefault();
+                    let input = document.getElementById('mode2_form');
+                    let value = document.getElementById('mode2_input').value;
+                    input.reset();
+                    on_click(value);
+
+                }
+            }
+        }
+    }
+
+
 }

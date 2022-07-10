@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>영단어 외우기</title>
+    <title>HELLO WORD - 게임 오버</title>
     <link rel="stylesheet" type="text/css" href="styles/style.css">
     <link rel="stylesheet" type="text/css" href="styles/game_over.css">
 </head>
@@ -11,7 +11,7 @@
 
 <p id="high_score">최고 기록: 0점</p>
 
-<button onclick="window.location.href = 'game.html';">재도전</button>
+<button onclick="window.location.href = 'game.html?mode=' + localStorage.getItem('word_last_stage') ?? '0';">재도전</button>
 <br>
 <button onclick="window.location.href = 'index.html';">타이틀 화면으로 돌아가기</button>
 <script src="scripts/game_over.js"></script>

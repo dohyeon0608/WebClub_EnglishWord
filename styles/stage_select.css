@@ -17,6 +17,10 @@ h1 {
     transition: all 0.5s;
 }
 
+#mode2_button {
+
+}
+
 button:hover {
     transform: scale(90%, 90%);
 }

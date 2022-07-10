@@ -1,6 +1,10 @@
 let answer = '';
 let score = 0;
 
+function error(message = "알 수 없는 오류가 발생했습니다. 나중에 다시 시도해주세요.") {
+    alert(message);
+    window.location.href = 'select_stage.html'
+}
 
 let maxLife = 5;
 let life = 3;
@@ -12,7 +16,7 @@ let isLoaded = false;
 let mode = urlParameter.get('mode');
 
 if(mode === null) {
-    window.location.href = 'select_stage.html'
+    error();
 }
 
 const highScoreAddress = 'word_high_score_' + mode;
@@ -42,6 +46,7 @@ let wordBoxElement = document.getElementById('word_box');
 function game_over() {
     localStorage.setItem(highScoreAddress, highScore)
     localStorage.setItem('word_last_score', score);
+    localStorage.setItem('word_last_stage', mode);
     window.location.href = "game_over.html";
 }
 
@@ -49,6 +54,37 @@ function error_alert(message) {
     alert('오류가 발생했습니다.' + "\n" + message);
     window.location.href = 'index.html'
 }
+
+function answer_correct() {
+    score++;
+}
+
+function answer_wrong() {
+    let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
+    if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+}
+
+function on_click(data) {
+    if(!isLoaded) {
+        alert('로딩 중입니다! 잠시만 기다려주세요!');
+        return;
+    }
+    if(data === answer) {
+        answer_correct()
+    } else {
+        answer_wrong()
+        // console.log('오답: ' + answer);
+        // console.log('정답: ' + button.innerHTML)
+    }
+    if(highScore < score) {
+        highScore = score;
+    }
+    if(life < 1) {
+        game_over();
+    }
+    reset();
+}
+
 
 window.onload = function() {
     word_txt = loadFile('../resources/words/word_lib')
@@ -80,40 +116,22 @@ window.onload = function() {
         img.id = 'heart' + i
         document.getElementById('hearts').append(img);
     }
-    reset();
 
     if(!isLoaded) {
         if(mode === '1' || mode === '2') {
             document.getElementById('word_padding').remove();
-        } else {
+        } else if(mode === '0') {
             document.getElementById('meaning_box').remove();
+        } else {
+            error("알 수 없는 모드입니다. 정상적으로 접근해주세요.");
         }
     }
 
+    reset();
+
     for(let button of selectButton) {
         if(button instanceof HTMLButtonElement) {
-            button.onclick = function () {
-                if(!isLoaded) {
-                    alert('로딩 중입니다! 잠시만 기다려주세요!');
-                    return;
-                }
-                if(button.innerHTML === answer) {
-                    score++;
-                    // console.log('정답: ' + answer);
-                } else {
-                    let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
-                    if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
-                    if(life < 1) {
-                        game_over();
-                    }
-                    // console.log('오답: ' + answer);
-                    // console.log('정답: ' + button.innerHTML)
-                }
-                if(highScore < score) {
-                    highScore = score;
-                }
-                reset();
-            };
+            button.onclick = on_click;
         }
     }
 
