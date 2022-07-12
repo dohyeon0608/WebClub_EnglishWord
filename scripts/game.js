@@ -38,15 +38,35 @@ let word_txt;
 let db = {
 };
 
+let wrong_asw_record = {
+
+};
+
 let selectButton = document.getElementsByClassName('choice');
 let scoreElement = document.getElementById('score');
 let highScoreElement = document.getElementById('high_score');
 let wordBoxElement = document.getElementById('word_box');
 
+let max_combos = 0;
+let combos = 0;
+
+function update_heart() {
+    for(let i = 0; i < maxLife; i++) {
+        let img = document.getElementById('heart' + i);
+        if(i < life) {
+            if(img instanceof HTMLImageElement) img.src = '../resources/heart.png';
+        } else {
+            if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+        }
+    }
+}
+
 function game_over() {
     localStorage.setItem(highScoreAddress, highScore)
     localStorage.setItem('word_last_score', score);
     localStorage.setItem('word_last_stage', mode);
+    localStorage.setItem('word_last_wrong', JSON.stringify(wrong_asw_record));
+    localStorage.setItem('word_last_combo', max_combos);
     window.location.href = "game_over.html";
 }
 
@@ -57,11 +77,34 @@ function error_alert(message) {
 
 function answer_correct() {
     score++;
+    combos++;
+    if(combos > max_combos) max_combos = combos;
+    if(combos % 10 === 0 && combos > 0) {
+        if(life <= maxLife - 1) {
+            life++;
+            // let img = document.getElementById('heart' + (maxLife - ++life + 1));
+            // if(img instanceof HTMLImageElement) img.src = '../resources/heart.png';
+        }
+    }
 }
 
 function answer_wrong() {
-    let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
-    if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+    combos = 0;
+    life--;
+    // let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
+    // if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+    wrong_asw_record[word + '\n' + db[word]] = ((wrong_asw_record[word]) ?? 0) + 1
+}
+
+function update_combo_text() {
+    let comboElement = document.getElementById('combo');
+    if(combos >= 3) {
+        let msg = combos + ' COMBO';
+        if(combos % 10 === 0) msg += '\n목숨 +1';
+        comboElement.innerText = msg;
+    } else {
+        comboElement.innerText = '';
+    }
 }
 
 function on_click(data) {
@@ -82,6 +125,8 @@ function on_click(data) {
     if(life < 1) {
         game_over();
     }
+    update_combo_text();
+    update_heart();
     reset();
 }
 
@@ -98,6 +143,9 @@ window.onload = function() {
         let l = line.split(': ');
         if(l.length !== 2) {
             error_alert('파일 로드에 실패했습니다: 구문 오류' + "\n" + '>  ' + line + ' (' + line_number + '번째 줄)');
+        }
+        if(typeof db[l[0]] !== "undefined") {
+            console.log('중복 이슈 (' + line_number + '줄): ' + l[0]);
         }
         db[l[0]] = l[1].replace('\r', '');
     }
@@ -131,9 +179,12 @@ window.onload = function() {
 
     for(let button of selectButton) {
         if(button instanceof HTMLButtonElement) {
-            button.onclick = on_click;
+            button.onclick = function() {
+                on_click(button.innerHTML)
+            };
         }
     }
 
     isLoaded = true;
 };
+

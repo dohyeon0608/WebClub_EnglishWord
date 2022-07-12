@@ -2,6 +2,7 @@ let scripts = [];
 let answer_index = 0;
 let answers = [];
 let question = 'Loading';
+let word = '';
 
 let mode2ButtonElement = document.getElementById('mode2_button');
 
@@ -51,6 +52,7 @@ scripts[0] = function() {
     question = (Object.keys(db))[index];
     answers = Object.values(db);
     answer = answers[index];
+    word = question;
 
     settingButton(answers, answer_index, question);
     // console.log('reset function called. (new value : ' + answer)
@@ -61,7 +63,7 @@ scripts[1] = function() {
     let meaning_box = document.getElementById('meaning_box');
 
     let word_number = Math.floor(Math.random() * Object.keys(db).length);
-    let word = (Object.keys(db))[word_number];
+    word = (Object.keys(db))[word_number];
     meaning_box.innerText = Object.values(db)[word_number];
 
     let chance = 3;
@@ -93,7 +95,7 @@ scripts[2] = function() {
     let meaning_box = document.getElementById('meaning_box');
 
     let word_number = Math.floor(Math.random() * Object.keys(db).length);
-    let word = (Object.keys(db))[word_number];
+    word = (Object.keys(db))[word_number];
 
     let words = word.split(' ');
 
