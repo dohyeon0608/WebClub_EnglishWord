@@ -20,7 +20,7 @@ if(mode === null) {
 }
 
 const highScoreAddress = 'word_high_score_' + mode;
-let highScore = localStorage.getItem(highScoreAddress) ?? 5;
+let highScore = localStorage.getItem(highScoreAddress) ?? 0;
 
 function loadFile(filePath) {
     let result = null;
