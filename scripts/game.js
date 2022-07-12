@@ -54,9 +54,9 @@ function update_heart() {
     for(let i = 0; i < maxLife; i++) {
         let img = document.getElementById('heart' + i);
         if(i < life) {
-            if(img instanceof HTMLImageElement) img.src = '../resources/heart.png';
+            if(img instanceof HTMLImageElement) img.src = 'resources/heart.png';
         } else {
-            if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+            if(img instanceof HTMLImageElement) img.src = 'resources/dead_heart.png';
         }
     }
 }
@@ -132,7 +132,7 @@ function on_click(data) {
 
 
 window.onload = function() {
-    word_txt = loadFile('../resources/words/word_lib')
+    word_txt = loadFile('resources/words/word_lib')
     if(word_txt === null) {
         error_alert('파일 로드에 실패했습니다: 알 수 없는 파일.');
     }
@@ -158,7 +158,7 @@ window.onload = function() {
 
     for(let i = 0; i < maxLife; i++) {
         let img = document.createElement('img');
-        img.src = '../resources/heart.png';
+        img.src = 'resources/heart.png';
         img.width = 50;
         img.height = 50;
         img.id = 'heart' + i
