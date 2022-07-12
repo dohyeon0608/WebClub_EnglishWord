@@ -17,5 +17,5 @@ for(let wrong in wrongs) {
 // shape.id = 'test'
 // document.body.appendChild(shape);
 e.innerText = '점수: ' + localStorage.getItem('word_last_score') + '점'
-    + "\n" + '최고 기록: ' + localStorage.getItem('word_high_score_' + localStorage.getItem('word_mode')) + '점'
+    + "\n" + '최고 기록: ' + localStorage.getItem('word_high_score_' + localStorage.getItem('word_last_stage')) + '점'
     + '\n' + '최대 콤보: ' + localStorage.getItem('word_last_combo');
