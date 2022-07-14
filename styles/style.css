@@ -72,6 +72,9 @@ button:hover {
 }
 
 body { overflow: hidden; }
+body * {
+    touch-action: pinch-zoom pan-y;
+}
 /*body * { touch-action: none; }*/
 
 body {
