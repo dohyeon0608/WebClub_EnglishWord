@@ -74,6 +74,7 @@ scripts[1] = function() {
     while (answer === ' ') {
         --chance;
         if(chance < 0) {
+            index = 0;
             answer = word.charAt(0);
             break;
         }
