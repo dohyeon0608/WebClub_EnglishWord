@@ -72,7 +72,7 @@ button:hover {
 }
 
 body { overflow: hidden; }
-body * { touch-action: none; }
+/*body * { touch-action: none; }*/
 
 body {
     width:900px;
