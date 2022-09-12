@@ -172,7 +172,7 @@ window.onload = function() {
 
     for(let i = 0; i < maxLife; i++) {
         let img = document.createElement('img');
-        img.src = '../resources/heart.png';
+        img.src = 'resources/heart.png';
         img.width = 50;
         img.height = 50;
         img.id = 'heart' + i
