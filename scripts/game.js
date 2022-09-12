@@ -14,13 +14,15 @@ const url = new URL(urlStr);
 let urlParameter = url.searchParams
 let isLoaded = false;
 let mode = urlParameter.get('mode');
+let suheang = urlParameter.get('suheang') ?? 'false';
+suheang = suheang === 'true';
 
 if(mode === null) {
     error();
 }
 
 const highScoreAddress = 'word_high_score_' + mode;
-let highScore = localStorage.getItem(highScoreAddress) ?? 0;
+let highScore = localStorage.getItem(highScoreAddress) ?? 5;
 
 function loadFile(filePath) {
     let result = null;
@@ -54,9 +56,9 @@ function update_heart() {
     for(let i = 0; i < maxLife; i++) {
         let img = document.getElementById('heart' + i);
         if(i < life) {
-            if(img instanceof HTMLImageElement) img.src = 'resources/heart.png';
+            if(img instanceof HTMLImageElement) img.src = '../resources/heart.png';
         } else {
-            if(img instanceof HTMLImageElement) img.src = 'resources/dead_heart.png';
+            if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
         }
     }
 }
@@ -93,7 +95,12 @@ function answer_wrong() {
     life--;
     // let img = document.getElementById('heart' + (maxLife - 1 - (maxLife - life--)));
     // if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
-    wrong_asw_record[word + '\n' + db[word]] = ((wrong_asw_record[word]) ?? 0) + 1
+    if(suheang) {
+        wrong_asw_record[db[word]] = ((wrong_asw_record[word]) ?? 0) + 1
+    } else {
+        wrong_asw_record[word + '\n' + db[word]] = ((wrong_asw_record[word]) ?? 0) + 1
+    }
+
 }
 
 function update_combo_text() {
@@ -132,7 +139,14 @@ function on_click(data) {
 
 
 window.onload = function() {
-    word_txt = loadFile('resources/words/word_lib')
+    if(suheang){
+        word_txt = loadFile('../resources/words/suheang_temporary');
+        console.log(suheang);
+        document.getElementById('word_box').id = 'word_box_long';
+    } else {
+        word_txt = loadFile('../resources/words/word_lib');
+    }
+
     if(word_txt === null) {
         error_alert('파일 로드에 실패했습니다: 알 수 없는 파일.');
     }
@@ -158,7 +172,7 @@ window.onload = function() {
 
     for(let i = 0; i < maxLife; i++) {
         let img = document.createElement('img');
-        img.src = 'resources/heart.png';
+        img.src = '../resources/heart.png';
         img.width = 50;
         img.height = 50;
         img.id = 'heart' + i
