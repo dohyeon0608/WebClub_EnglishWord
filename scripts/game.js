@@ -22,7 +22,7 @@ if(mode === null) {
 }
 
 const highScoreAddress = 'word_high_score_' + mode;
-let highScore = localStorage.getItem(highScoreAddress) ?? 5;
+let highScore = localStorage.getItem(highScoreAddress) ?? 0;
 
 function loadFile(filePath) {
     let result = null;
@@ -56,9 +56,9 @@ function update_heart() {
     for(let i = 0; i < maxLife; i++) {
         let img = document.getElementById('heart' + i);
         if(i < life) {
-            if(img instanceof HTMLImageElement) img.src = '../resources/heart.png';
+            if(img instanceof HTMLImageElement) img.src = 'resources/heart.png';
         } else {
-            if(img instanceof HTMLImageElement) img.src = '../resources/dead_heart.png';
+            if(img instanceof HTMLImageElement) img.src = 'resources/dead_heart.png';
         }
     }
 }
@@ -140,11 +140,11 @@ function on_click(data) {
 
 window.onload = function() {
     if(suheang){
-        word_txt = loadFile('../resources/words/suheang_temporary');
+        word_txt = loadFile('resources/words/suheang_temporary');
         console.log(suheang);
         document.getElementById('word_box').id = 'word_box_long';
     } else {
-        word_txt = loadFile('../resources/words/word_lib');
+        word_txt = loadFile('resources/words/word_lib');
     }
 
     if(word_txt === null) {
